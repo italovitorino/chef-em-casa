@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 @Service
 public class JwtTokenService {
@@ -26,6 +27,7 @@ public class JwtTokenService {
     public String generateAccessToken(User user) {
         var now = Instant.now();
         var claims = JwtClaimsSet.builder()
+                .id(UUID.randomUUID().toString())
                 .subject(user.getId().toString())
                 .issuedAt(now)
                 .expiresAt(now.plus(accessTokenExpiryMinutes, ChronoUnit.MINUTES))
