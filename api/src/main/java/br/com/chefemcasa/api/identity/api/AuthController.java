@@ -23,8 +23,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
-        var user = authService.register(
-                request.name(), request.email(), request.password(), request.role());
+        var user = authService.register(request);
         return ResponseEntity
                 .created(URI.create("/users/" + user.getId()))
                 .body(UserMapper.toResponse(user));
@@ -32,14 +31,14 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest request) {
-        var tokens = authService.login(request.email(), request.password());
+        var tokens = authService.login(request);
         return ResponseEntity.ok(
                 new TokenResponse(tokens.accessToken(), "Bearer", 900, tokens.refreshToken()));
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<TokenResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
-        var tokens = authService.refresh(request.refreshToken());
+        var tokens = authService.refresh(request);
         return ResponseEntity.ok(
                 new TokenResponse(tokens.accessToken(), "Bearer", 900, tokens.refreshToken()));
     }

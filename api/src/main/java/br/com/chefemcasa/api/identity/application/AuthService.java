@@ -1,11 +1,13 @@
 package br.com.chefemcasa.api.identity.application;
 
+import br.com.chefemcasa.api.identity.api.dto.LoginRequest;
+import br.com.chefemcasa.api.identity.api.dto.RefreshTokenRequest;
+import br.com.chefemcasa.api.identity.api.dto.RegisterRequest;
 import br.com.chefemcasa.api.identity.domain.exception.EmailAlreadyRegisteredException;
 import br.com.chefemcasa.api.identity.domain.exception.InvalidCredentialsException;
 import br.com.chefemcasa.api.identity.domain.exception.UserNotFoundException;
 import br.com.chefemcasa.api.identity.domain.model.RefreshToken;
 import br.com.chefemcasa.api.identity.domain.model.User;
-import br.com.chefemcasa.api.identity.domain.model.UserRole;
 import br.com.chefemcasa.api.identity.domain.repository.RefreshTokenRepository;
 import br.com.chefemcasa.api.identity.domain.repository.UserRepository;
 import br.com.chefemcasa.api.identity.domain.service.PasswordEncoder;
@@ -43,11 +45,11 @@ public class AuthService {
     }
 
     @Transactional
-    public User register(String name, String email, String rawPassword, UserRole role) {
-        if (userRepository.existsByEmail(email)) {
-            throw new EmailAlreadyRegisteredException(email);
+    public User register(RegisterRequest request) {
+        if (userRepository.existsByEmail(request.email())) {
+            throw new EmailAlreadyRegisteredException(request.email());
         }
-        var user = User.register(name, email, passwordEncoder.encode(rawPassword), role);
+        var user = User.register(request.name(), request.email(), passwordEncoder.encode(request.password()), request.role());
         var saved = userRepository.save(user);
         saved.drainEvents().forEach(event ->
                 rabbitTemplate.convertAndSend(EVENTS_EXCHANGE, USER_REGISTERED_KEY, event));
@@ -55,16 +57,16 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenPair login(String email, String rawPassword) {
-        var user = userRepository.findByEmail(email)
-                .filter(u -> passwordEncoder.matches(rawPassword, u.getPasswordHash()))
+    public TokenPair login(LoginRequest request) {
+        var user = userRepository.findByEmail(request.email())
+                .filter(u -> passwordEncoder.matches(request.password(), u.getPasswordHash()))
                 .orElseThrow(InvalidCredentialsException::new);
         return issueTokens(user);
     }
 
     @Transactional
-    public TokenPair refresh(UUID refreshTokenValue) {
-        var refreshToken = refreshTokenRepository.findByToken(refreshTokenValue)
+    public TokenPair refresh(RefreshTokenRequest request) {
+        var refreshToken = refreshTokenRepository.findByToken(request.refreshToken())
                 .orElseThrow(InvalidCredentialsException::new);
         if (!refreshToken.isValid()) {
             throw new InvalidCredentialsException();
