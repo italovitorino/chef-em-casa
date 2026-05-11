@@ -123,6 +123,7 @@ public class SolicitationService {
         return solicitation;
     }
 
+    @Transactional(readOnly = true)
     public List<Solicitation> findAll(UUID actorId, UserRole role) {
         return switch (role) {
             case CLIENT -> solicitationRepository.findByClientId(actorId);
@@ -140,6 +141,7 @@ public class SolicitationService {
     private void publishEvents(List<DomainEvent> events) {
         events.forEach(event -> {
             var key = ROUTING_KEYS.get(event.getClass());
+            // fail-fast: propagates through @Transactional to roll back the DB write on unmapped events
             if (key == null) throw new IllegalStateException("Sem routing key para: " + event.getClass());
             rabbitTemplate.convertAndSend(EVENTS_EXCHANGE, key, event);
         });
