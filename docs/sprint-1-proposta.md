@@ -65,43 +65,13 @@ RESERVATION_CONFIRMED
 
 ## 4. Arquitetura do Sistema
 
-```mermaid
-graph TD
-    subgraph Mobile
-        APP_CLIENT[App Flutter\nCliente]
-        APP_CHEF[App Flutter\nChef]
-    end
-
-    subgraph Backend["Backend — Spring Boot (Java 25)"]
-        API[REST API\n/api/*]
-        SVC[Application Services\nDDD]
-        DOMAIN[Domain Layer\nAggregates · Events]
-        INFRA[Infrastructure\nJPA · RabbitMQ Publisher]
-    end
-
-    subgraph Infra["Infraestrutura Local (Podman)"]
-        PG[(PostgreSQL\nidentidade · solicitacoes)]
-        RMQ[RabbitMQ\nExchange: chefemcasa.events]
-        NOTIF[Serviço Notificações\nConsumidor RabbitMQ]
-        FCM[Firebase FCM\nPush Notifications]
-    end
-
-    APP_CLIENT -- REST/HTTPS --> API
-    APP_CHEF   -- REST/HTTPS --> API
-    API --> SVC --> DOMAIN --> INFRA
-    INFRA -- JPA --> PG
-    INFRA -- AMQP publish --> RMQ
-    RMQ -- consume --> NOTIF
-    NOTIF -- push --> FCM
-    FCM -- notification --> APP_CLIENT
-    FCM -- notification --> APP_CHEF
-```
+![Diagrama de Arquitetura](images/diagrama_de_arquitetura.png)
 
 **Protocolos de comunicação:**
 - Mobile ↔ Backend: **REST/HTTPS** (JSON)
 - Backend → RabbitMQ: **AMQP** (mensagens persistentes, `delivery_mode=2`)
-- RabbitMQ → Consumidores: **AMQP** (filas com DLQ)
-- Notificações push: **FCM** via Firebase Admin SDK
+- RabbitMQ → Notification Service: **AMQP** (filas com DLQ)
+- Notificações push: **FCM** via Firebase HTTPS/Admin SDK
 
 ---
 
