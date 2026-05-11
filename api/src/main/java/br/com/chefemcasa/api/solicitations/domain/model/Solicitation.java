@@ -83,6 +83,9 @@ public class Solicitation {
             throw new InvalidTransitionException("acceptProposal", status);
         }
         var current = getCurrentProposal();
+        if (current == null) {
+            throw new IllegalStateException("Nenhuma proposta atual para aceitar");
+        }
         status = SolicitationStatus.RESERVATION_CONFIRMED;
         updatedAt = Instant.now();
         events.add(new ProposalAccepted(UUID.randomUUID(), updatedAt, 1, id, clientId, chefId));
