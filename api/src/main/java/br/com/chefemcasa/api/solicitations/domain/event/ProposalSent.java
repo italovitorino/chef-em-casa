@@ -6,7 +6,11 @@ import java.time.Instant;
 import java.util.UUID;
 
 public record ProposalSent(
-        UUID eventId, Instant occurredAt, int version,
-        UUID solicitationId, UUID clientId, UUID chefId,
+        UUID eventId,
+        Instant occurredAt,
+        int version,
+        UUID solicitationId,
+        UUID clientId,
+        UUID chefId,
         BigDecimal totalAmount
 ) implements DomainEvent {}

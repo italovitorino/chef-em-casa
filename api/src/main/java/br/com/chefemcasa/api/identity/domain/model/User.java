@@ -36,7 +36,7 @@ public class User {
     private Instant createdAt;
 
     @Transient
-    private final List<DomainEvent> domainEvents = new ArrayList<>();
+    private final List<DomainEvent> events = new ArrayList<>();
 
     protected User() {}
 
@@ -52,14 +52,14 @@ public class User {
 
     public static User register(String name, String email, String passwordHash, UserRole role) {
         var user = new User(UUID.randomUUID(), name, email, passwordHash, role);
-        user.domainEvents.add(new UserRegistered(
+        user.events.add(new UserRegistered(
                 UUID.randomUUID(), user.createdAt, 1, user.id, user.email, user.role));
         return user;
     }
 
     public List<DomainEvent> drainEvents() {
-        var snapshot = List.copyOf(domainEvents);
-        domainEvents.clear();
+        var snapshot = List.copyOf(events);
+        events.clear();
         return snapshot;
     }
 

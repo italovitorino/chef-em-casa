@@ -9,5 +9,7 @@ public record Address(
         String number,
         String city,
         String state,
-        @Column(name = "zip_code") String zipCode
+
+        @Column(name = "zip_code")
+        String zipCode
 ) {}

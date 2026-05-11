@@ -3,6 +3,7 @@ package br.com.chefemcasa.api.shared.api;
 import br.com.chefemcasa.api.identity.domain.exception.EmailAlreadyRegisteredException;
 import br.com.chefemcasa.api.identity.domain.exception.InvalidCredentialsException;
 import br.com.chefemcasa.api.identity.domain.exception.UserNotFoundException;
+import br.com.chefemcasa.api.solicitations.domain.exception.InvalidSolicitationTargetException;
 import br.com.chefemcasa.api.solicitations.domain.exception.InvalidTransitionException;
 import br.com.chefemcasa.api.solicitations.domain.exception.SolicitationNotFoundException;
 import br.com.chefemcasa.api.solicitations.domain.exception.UnauthorizedActorException;
@@ -56,5 +57,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         var pd = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
         pd.setTitle("Acesso negado");
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(pd);
+    }
+
+    @ExceptionHandler(InvalidSolicitationTargetException.class)
+    public ResponseEntity<ProblemDetail> handleInvalidSolicitationTarget(InvalidSolicitationTargetException ex) {
+        var pd = ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        pd.setTitle("Destinatário inválido");
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(pd);
     }
 }

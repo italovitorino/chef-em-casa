@@ -8,8 +8,15 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record SubmitProposalRequest(
-        @NotNull @DecimalMin("0.01") BigDecimal totalAmount,
-        @NotBlank String serviceDescription,
-        @NotNull LocalDate validUntil,
+        @NotNull
+        @DecimalMin("0.01")
+        BigDecimal totalAmount,
+
+        @NotBlank
+        String serviceDescription,
+
+        @NotNull
+        LocalDate validUntil,
+
         String notes
 ) {}

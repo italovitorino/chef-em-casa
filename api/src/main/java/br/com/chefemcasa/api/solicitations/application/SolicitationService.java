@@ -5,6 +5,7 @@ import br.com.chefemcasa.api.shared.domain.event.DomainEvent;
 import br.com.chefemcasa.api.solicitations.api.dto.CreateSolicitationRequest;
 import br.com.chefemcasa.api.solicitations.api.dto.SubmitProposalRequest;
 import br.com.chefemcasa.api.solicitations.domain.event.*;
+import br.com.chefemcasa.api.solicitations.domain.exception.InvalidSolicitationTargetException;
 import br.com.chefemcasa.api.solicitations.domain.exception.SolicitationNotFoundException;
 import br.com.chefemcasa.api.solicitations.domain.exception.UnauthorizedActorException;
 import br.com.chefemcasa.api.solicitations.domain.model.*;
@@ -34,15 +35,25 @@ public class SolicitationService {
 
     private final SolicitationRepository solicitationRepository;
     private final RabbitTemplate rabbitTemplate;
+    private final UserRoleChecker userRoleChecker;
 
     public SolicitationService(SolicitationRepository solicitationRepository,
-                                RabbitTemplate rabbitTemplate) {
+                               RabbitTemplate rabbitTemplate,
+                               UserRoleChecker userRoleChecker) {
         this.solicitationRepository = solicitationRepository;
         this.rabbitTemplate = rabbitTemplate;
+        this.userRoleChecker = userRoleChecker;
     }
 
     @Transactional
-    public Solicitation createSolicitation(UUID clientId, CreateSolicitationRequest request) {
+    public Solicitation createSolicitation(UUID clientId, UserRole callerRole, CreateSolicitationRequest request) {
+        if (callerRole != UserRole.CLIENT) throw new UnauthorizedActorException();
+        if (clientId.equals(request.chefId()))
+            throw new InvalidSolicitationTargetException("Não é possível criar uma solicitação para si mesmo");
+        var targetRole = userRoleChecker.findRoleById(request.chefId())
+                .orElseThrow(() -> new InvalidSolicitationTargetException("O usuário indicado não foi encontrado"));
+        if (targetRole != UserRole.CHEF)
+            throw new InvalidSolicitationTargetException("O usuário indicado não é um chef");
         var address = new Address(request.street(), request.number(), request.city(),
                 request.state(), request.zipCode());
         var briefing = new Briefing(request.eventType(), request.eventDate(),
@@ -141,7 +152,6 @@ public class SolicitationService {
     private void publishEvents(List<DomainEvent> events) {
         events.forEach(event -> {
             var key = ROUTING_KEYS.get(event.getClass());
-            // fail-fast: propagates through @Transactional to roll back the DB write on unmapped events
             if (key == null) throw new IllegalStateException("Sem routing key para: " + event.getClass());
             rabbitTemplate.convertAndSend(EVENTS_EXCHANGE, key, event);
         });

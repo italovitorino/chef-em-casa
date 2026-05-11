@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/solicitations")
+@RequestMapping("/api/solicitations")
 public class SolicitationController {
 
     private final SolicitationService solicitationService;
@@ -29,7 +29,8 @@ public class SolicitationController {
             @Valid @RequestBody CreateSolicitationRequest request,
             JwtAuthenticationToken authentication) {
         var clientId = UUID.fromString(authentication.getToken().getSubject());
-        var solicitation = solicitationService.createSolicitation(clientId, request);
+        var role = UserRole.valueOf(authentication.getToken().getClaim("role"));
+        var solicitation = solicitationService.createSolicitation(clientId, role, request);
         return ResponseEntity
                 .created(URI.create("/solicitations/" + solicitation.getId()))
                 .body(SolicitationMapper.toResponse(solicitation));

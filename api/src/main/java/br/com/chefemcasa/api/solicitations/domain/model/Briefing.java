@@ -9,10 +9,18 @@ import java.time.LocalDate;
 
 @Embeddable
 public record Briefing(
-        @Enumerated(EnumType.STRING) @Column(name = "event_type")   EventType eventType,
-        @Column(name = "event_date")                                 LocalDate eventDate,
-        @Column(name = "number_of_guests")                           int numberOfGuests,
+        @Enumerated(EnumType.STRING) @Column(name = "event_type")
+        EventType eventType,
+
+        @Column(name = "event_date")
+        LocalDate eventDate,
+
+        @Column(name = "number_of_guests")
+        int numberOfGuests,
+
         Address location,
-        @Column(name = "estimated_duration_minutes")                 int estimatedDurationMinutes,
+
+        @Column(name = "estimated_duration_minutes")
+        int estimatedDurationMinutes,
         String notes
 ) {}
