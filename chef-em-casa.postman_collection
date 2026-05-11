@@ -1,0 +1,465 @@
+{
+  "info": {
+    "_postman_id": "36e020f1-7235-4728-a65b-a85e2820d201",
+    "name": "Chef em Casa",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "26903076"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Ítalo Vitorino\",\r\n    \"email\": \"italo.vitorinobs@hotmail.com\",\r\n    \"password\": \"Senha@123\",\r\n    \"role\": \"CHEF\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/auth/register",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"italo.vitorinobs@hotmail.com\",\r\n    \"password\": \"Senha@123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/auth/login",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"refreshToken\": \"0428acdb-569a-4228-a812-4616e2921e11\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/auth/refresh",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get by Id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJkZTYzMWJiMy02NzQ0LTQ0MzMtYjY2MS0wNjA4OTEzODZhMGIiLCJyb2xlIjoiQ0hFRiIsImV4cCI6MTc3ODQ3NDE5NiwiaWF0IjoxNzc4NDczMjk2LCJqdGkiOiJjODc0OGIyYi1mMzg1LTRkZGEtYWNiZi0yZDEwZjg0Y2EzZDEiLCJlbWFpbCI6Imp1bGlhLnZpdG9yaW5vQGhvdG1haWwuY29tIn0.t9j-wslAXhlcv_RhZmVMDWAc-md-4voPDLbqIQHhx28uOVL-jjcxM8qS0rvDhaW7u8qxZxMvmlnZ9ifQ6qA7DhFWNzB2OUw3yUgA9JSw-yoMPistPuBGpfqtUJ9iOSFKnq1NFSTa_HGmWi3RcGlYL6uf8FY--da5fA8xW8shTD8Qz8Tt73NFXI7M1eoP_zy1YXKtb1ytL_B3TLx_1MhKEA4laN3MKKEHhb7OhDxF7ng0OHFj_OKMZ8ufnxGxlZY2hyrULOAkqqyJ0xFZJkJ896tRqMa7Bbk1DB4yYAu2Hif_-qYlrmmCYXEJZWLOyYOiVGUyfvTOnC9QaGx8fTkLkQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/users/de631bb3-6744-4433-b661-060891386a0b",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "users",
+                "de631bb3-6744-4433-b661-060891386a0b"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Solicitations",
+      "item": [
+        {
+          "name": "Proposals",
+          "item": [
+            {
+              "name": "Submit Proposal",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIyM2UxMzBjZC05NTViLTQxNzctODJlOS0yNGI4NDRiODcxNTgiLCJyb2xlIjoiQ0hFRiIsImV4cCI6MTc3ODUwMDQ5NCwiaWF0IjoxNzc4NDk5NTk0LCJqdGkiOiJmNDBhNzlkZi1mYTBiLTQ4YWMtODZhOS0xMzUzNTY5OTE0NGYiLCJlbWFpbCI6Iml0YWxvMi52aXRvcmlub2JzQGhvdG1haWwuY29tIn0.KYBa4dM6HaKn3wPCHq7Fjwuxln6jS3hztv_2VoF7xrkKi5OtBo_o9LxoAGOWdr4oVLncwxSvi8MyTqjEJXYnoEgLrbFsKhaQXXYOSyCTdNRjWs73SOyT9skCpX9za5jE9ImIlbq5Uj8pVW6jG4aICErY1xm4jzShDI5_gr4Uex0Opo4ls13Zp-th0TGMA4Nb5NwdXAFQ8fAJZdfPlRE1pApyTBZHMtd2lwxLX3LrpDi9rMH4Okr8LmriMD4AT8pnIUKSLoxpKMMUiZKtIwTPIotmIhDpzU4tJA_XzAzJsNiGDc9Nc7GS1s8111na-VHRZgGqUvnf9JQTcaXxAz2-Pw",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"totalAmount\": 100.00,\r\n    \"serviceDescription\": \"teste\",\r\n    \"validUntil\": \"2026-05-11\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{HOST}}/solicitations/f528ca14-98f0-4285-a33b-d1563dee5615/proposals",
+                  "host": [
+                    "{{HOST}}"
+                  ],
+                  "path": [
+                    "solicitations",
+                    "f528ca14-98f0-4285-a33b-d1563dee5615",
+                    "proposals"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Accept",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJjMzY5YjM5MS0xOWJhLTRiOWItODEzNS01MWQ3ZWYyZDA0ZTciLCJyb2xlIjoiQ0xJRU5UIiwiZXhwIjoxNzc4NTAwODM5LCJpYXQiOjE3Nzg0OTk5MzksImp0aSI6IjE2ZTdmMjFkLWI0MzQtNGZlMy1hNjczLWI0ZjNkMDQwY2M0OCIsImVtYWlsIjoiaXRhbG8udml0b3Jpbm9ic0Bob3RtYWlsLmNvbSJ9.kAalVXDUhhFJZX9FNLA_8AX7yXwLKGGAGJC5W_8mSlaUs5MtCc5vHTykkFb-xKcPPprerWYqmB2lJ87DDgEV2p71oGCufdJOLIg7sR1OmKcT13CFpdVvNQOpDSzFHtFljmQthnNdRWYpDeG7_hi8GWq8oGNKKIzyuv0WTAtwEWQv-jR3JChcCqpSA8pAyFK2trn50L3zTPsbI4UU61JJFEF-IKSx0_jsayhCeIaq9LQpQD-lSOACbqdB_Vy7ni6Pavmg61pJABzshlPZezUeFvEw5Xq5DZS_kzTB9rI0mnRPgLKkuQl7bn9qsKkvo2b9IagubJftQxo2GZYb8_mzsA",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"totalAmount\": 100.00,\r\n    \"serviceDescription\": \"teste\",\r\n    \"validUntil\": \"2026-05-11\"\r\n}"
+                },
+                "url": {
+                  "raw": "{{HOST}}/solicitations/f528ca14-98f0-4285-a33b-d1563dee5615/proposals/accept",
+                  "host": [
+                    "{{HOST}}"
+                  ],
+                  "path": [
+                    "solicitations",
+                    "f528ca14-98f0-4285-a33b-d1563dee5615",
+                    "proposals",
+                    "accept"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Reject",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJjMzY5YjM5MS0xOWJhLTRiOWItODEzNS01MWQ3ZWYyZDA0ZTciLCJyb2xlIjoiQ0xJRU5UIiwiZXhwIjoxNzc4NTAwODM5LCJpYXQiOjE3Nzg0OTk5MzksImp0aSI6IjE2ZTdmMjFkLWI0MzQtNGZlMy1hNjczLWI0ZjNkMDQwY2M0OCIsImVtYWlsIjoiaXRhbG8udml0b3Jpbm9ic0Bob3RtYWlsLmNvbSJ9.kAalVXDUhhFJZX9FNLA_8AX7yXwLKGGAGJC5W_8mSlaUs5MtCc5vHTykkFb-xKcPPprerWYqmB2lJ87DDgEV2p71oGCufdJOLIg7sR1OmKcT13CFpdVvNQOpDSzFHtFljmQthnNdRWYpDeG7_hi8GWq8oGNKKIzyuv0WTAtwEWQv-jR3JChcCqpSA8pAyFK2trn50L3zTPsbI4UU61JJFEF-IKSx0_jsayhCeIaq9LQpQD-lSOACbqdB_Vy7ni6Pavmg61pJABzshlPZezUeFvEw5Xq5DZS_kzTB9rI0mnRPgLKkuQl7bn9qsKkvo2b9IagubJftQxo2GZYb8_mzsA",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"totalAmount\": 100.00,\r\n    \"serviceDescription\": \"teste\",\r\n    \"validUntil\": \"2026-05-11\"\r\n}"
+                },
+                "url": {
+                  "raw": "{{HOST}}/solicitations/f528ca14-98f0-4285-a33b-d1563dee5615/proposals/reject",
+                  "host": [
+                    "{{HOST}}"
+                  ],
+                  "path": [
+                    "solicitations",
+                    "f528ca14-98f0-4285-a33b-d1563dee5615",
+                    "proposals",
+                    "reject"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Request Revision",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJjMzY5YjM5MS0xOWJhLTRiOWItODEzNS01MWQ3ZWYyZDA0ZTciLCJyb2xlIjoiQ0xJRU5UIiwiZXhwIjoxNzc4NTAwNjk5LCJpYXQiOjE3Nzg0OTk3OTksImp0aSI6IjgzMWE5ODQ2LTlkZTctNDMxNi05ODk0LTkxMTdkY2U2ZGM1MSIsImVtYWlsIjoiaXRhbG8udml0b3Jpbm9ic0Bob3RtYWlsLmNvbSJ9.cUvOTD4yDUiI-Lw8HKbysGgjCtwOMj8K_BNrzAWQU2k4eOGnWhdjct9plRWaLI97-MvEl08UJLx--p1VAQM9c2eEkYn4afK-UffMXcWoQalFq3EjXS76MqRmGreiOvsJbVLRQ22oqxIkyfDEYhxE3cNxD7nrMkc0jronzeRocWTHjLK6tQf0Rvl1gyFA9FPoRLGv2v__5l4XWAnQDjwJIe0NUO_U1bgAdgIN7VHDa0aPCia23xIp3LMVwMkljk4sRZgIucHbD3hPb-17rpE16sATRxl7pBdX5CEvxAoPvx6KkzVc39htPqK9gLTQf9fADoW47r7YNBl1dOZ_ynT9sQ",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{HOST}}/solicitations/f528ca14-98f0-4285-a33b-d1563dee5615/proposals/request-revision",
+                  "host": [
+                    "{{HOST}}"
+                  ],
+                  "path": [
+                    "solicitations",
+                    "f528ca14-98f0-4285-a33b-d1563dee5615",
+                    "proposals",
+                    "request-revision"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Create",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJjMzY5YjM5MS0xOWJhLTRiOWItODEzNS01MWQ3ZWYyZDA0ZTciLCJyb2xlIjoiQ0xJRU5UIiwiZXhwIjoxNzc4NTAwMzc1LCJpYXQiOjE3Nzg0OTk0NzUsImp0aSI6IjI4NWM2NDdmLWUxMDktNDE2OS1iMjQxLWI3ODYyNWQ2OTU5NCIsImVtYWlsIjoiaXRhbG8udml0b3Jpbm9ic0Bob3RtYWlsLmNvbSJ9.cVBOnFNlJE8N0KWOywhyVA6Taul7TODqRKphaTtwZJH3e_HbewLpfbKyOinE_hEho0SUamFaXGglri_xsj3R0F_l7KnTjW1XVTyixEhvA9N8FqyfhMJEY58Ge7qAOlwsIC3MhJkfB2GLV1sVM0-rPYHu82wkjZPoFrZLqJfwRUJZAVcwGjFqThKJ6CEO4GjRR4Xiq5I--tDJR1VPidE9lf0JwRECgncP05g4eT5VgxTlzyE9465EmLg7negnSpl8RKpe6kFuHN0dq_Iym2Lwid24bonc2ArPsCtgmp4uZBBgaFnTevjYA0DxfOgFsdOeB_uiL56RVq9AFzylP0Ep3w",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"chefId\": \"23e130cd-955b-4177-82e9-24b844b87158\",\r\n    \"eventType\": \"PRIVATE_DINNER\",\r\n    \"eventDate\": \"2026-05-11\",\r\n    \"numberOfGuests\": 10,\r\n    \"street\": \"Rua Ametista\",\r\n    \"number\": \"32\",\r\n    \"city\": \"Santa Luzia\",\r\n    \"state\": \"MG\",\r\n    \"zipCode\": \"33080325\",\r\n    \"estimatedDurationMinutes\": 240\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/solicitations",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "solicitations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get by Id",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhMTFhYTZmNS0wODI4LTQxNWEtOTQ3Mi1jODEzZDM0MDUzYjgiLCJyb2xlIjoiQ0xJRU5UIiwiZXhwIjoxNzc4NDc0NDc2LCJpYXQiOjE3Nzg0NzM1NzYsImp0aSI6IjE0NzhiMzM2LTczZTktNDNiMi1iNmJhLTM2MTI0MzgxMDQzNCIsImVtYWlsIjoiaXRhbG8udml0b3Jpbm9ic0Bob3RtYWlsLmNvbSJ9.ls3A9Qr36T9Z4wHHUpOV3ZUTBT6Jv0wgB-XlTDar3BI2Nb7D2ogoLXrSi8fKG8pSkePp0kHPvmH0pIqNYXVcLnIMpRDaObsstumrgrB-JEaBI24-R6Tqt7Ansv1wb3P9dADf3_vjVZO1zcDuZFUwo6sSybzl7U4xlMhhijhG_BKTKKRwMaecF4FLdRkSUcrkndaH7X2DcQlP0jiB5qtfPlnDVOaasgOklT4Mvhl66yG8_Blv4UeuyMReLDAzpac2WO9Aq7lV_qXEMFkFRHqsLcLUFTWBTnOxlACmz7zPTVkjLLmWSvu4rKhr4Cmnxh6QSqioHsstBtF-P-XvM2BCLQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"chefId\": \"de631bb3-6744-4433-b661-060891386a0b\",\r\n    \"eventType\": \"PRIVATE_DINNER\",\r\n    \"eventDate\": \"2026-05-11\",\r\n    \"numberOfGuests\": 10,\r\n    \"street\": \"Rua Ametista\",\r\n    \"number\": \"32\",\r\n    \"city\": \"Santa Luzia\",\r\n    \"state\": \"MG\",\r\n    \"zipCode\": \"33080325\",\r\n    \"estimatedDurationMinutes\": 240\r\n}"
+            },
+            "url": {
+              "raw": "{{HOST}}/solicitations/087a3461-953e-4d3a-a3f2-ba63f925f662",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "solicitations",
+                "087a3461-953e-4d3a-a3f2-ba63f925f662"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhMTFhYTZmNS0wODI4LTQxNWEtOTQ3Mi1jODEzZDM0MDUzYjgiLCJyb2xlIjoiQ0xJRU5UIiwiZXhwIjoxNzc4NDc0ODk5LCJpYXQiOjE3Nzg0NzM5OTksImp0aSI6IjIwY2E4MDRmLTI2MDktNGE0OC1iMzJlLTg4NTgxNDcyZDZmNCIsImVtYWlsIjoiaXRhbG8udml0b3Jpbm9ic0Bob3RtYWlsLmNvbSJ9.g-_zd9Z7hQ5cDZdpdiZSXSg2sNDxm2pZqrezEgNxDj2vZa5TVUy93lIhrsn8EyGhMOjabiYPluEKFlTe13aDZxseTXwDVeaUSdogUeR3HsXyqIq4OXhAe8qb4QdF2vutfJ26LxV324JkUBxM3uQ-mB0HaBIEL_Ux2x3Ehgp1W34gb37agXz4FNn2a4qGRvxAQdbwoUBBdivSNPRseVSlIQx1VDoEyDE_HjbDXWdnV7ncpQ36Ic0RMLitXFSTwtzrOhbU3qY3BUOJV1J91386KzjMfVcyJ6MvHMy3YIzYGYqRxIQXcNZfufuZJiOc-VMlPt3XOzB7EjSV9amFgzcvgQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/solicitations",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "solicitations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Complete",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJjMzY5YjM5MS0xOWJhLTRiOWItODEzNS01MWQ3ZWYyZDA0ZTciLCJyb2xlIjoiQ0xJRU5UIiwiZXhwIjoxNzc4NTAxMDYyLCJpYXQiOjE3Nzg1MDAxNjIsImp0aSI6IjNiNTU2MGUxLTg3MTMtNGQ1Ny1hOTMzLWNmNTFkOTRmYTNlMCIsImVtYWlsIjoiaXRhbG8udml0b3Jpbm9ic0Bob3RtYWlsLmNvbSJ9.FJhgVgEepX67T5agwtGHX5qElUFcroEC7oxldZa86AYnqgpnt-Wgnajnzo_UalJfm5WWhbN2N4p8PTJm5Viw5R93yrB9QQFzyxjBUCqwWoXu8aRB-ZZLGAQLNjKd71Jw5Zk0EEwCTqondEYFonxVE-wEHq7eBH-b1el7lVTt_B0BFonQEoL624Ac1spHHMYJmJnuAa-28vuK9OM1mkT8DP6A7Ul90Y55CpAWAENLw5012l99vYHqhldCvPSTGnMRzDChM4NXAwau08atIK8JmD-6dL8Fd8eBjI2kD2KXzJ6me-sWZEm00vnqBXXtaH08kP8HnpzBBaN4rvjL4HNSlw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/solicitations/f528ca14-98f0-4285-a33b-d1563dee5615/complete",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "solicitations",
+                "f528ca14-98f0-4285-a33b-d1563dee5615",
+                "complete"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJjMzY5YjM5MS0xOWJhLTRiOWItODEzNS01MWQ3ZWYyZDA0ZTciLCJyb2xlIjoiQ0xJRU5UIiwiZXhwIjoxNzc4NTAwODM5LCJpYXQiOjE3Nzg0OTk5MzksImp0aSI6IjE2ZTdmMjFkLWI0MzQtNGZlMy1hNjczLWI0ZjNkMDQwY2M0OCIsImVtYWlsIjoiaXRhbG8udml0b3Jpbm9ic0Bob3RtYWlsLmNvbSJ9.kAalVXDUhhFJZX9FNLA_8AX7yXwLKGGAGJC5W_8mSlaUs5MtCc5vHTykkFb-xKcPPprerWYqmB2lJ87DDgEV2p71oGCufdJOLIg7sR1OmKcT13CFpdVvNQOpDSzFHtFljmQthnNdRWYpDeG7_hi8GWq8oGNKKIzyuv0WTAtwEWQv-jR3JChcCqpSA8pAyFK2trn50L3zTPsbI4UU61JJFEF-IKSx0_jsayhCeIaq9LQpQD-lSOACbqdB_Vy7ni6Pavmg61pJABzshlPZezUeFvEw5Xq5DZS_kzTB9rI0mnRPgLKkuQl7bn9qsKkvo2b9IagubJftQxo2GZYb8_mzsA",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"totalAmount\": 100.00,\r\n    \"serviceDescription\": \"teste\",\r\n    \"validUntil\": \"2026-05-11\"\r\n}"
+            },
+            "url": {
+              "raw": "{{HOST}}/solicitations/f528ca14-98f0-4285-a33b-d1563dee5615/cancel",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "solicitations",
+                "f528ca14-98f0-4285-a33b-d1563dee5615",
+                "cancel"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "HOST",
+      "value": ""
+    }
+  ]
+}

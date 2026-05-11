@@ -1,4 +1,4 @@
-package br.com.chefemcasa.api.identity.infrastructure;
+package br.com.chefemcasa.api.identity.infrastructure.security;
 
 import br.com.chefemcasa.api.identity.domain.service.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
