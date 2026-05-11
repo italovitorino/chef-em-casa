@@ -1,8 +1,7 @@
 # Proposta de Domínio — Chef em Casa
 
 **Disciplina:** Lab. de Desenvolvimento de Aplicações Móveis e Distribuídas  
-**Aluno:** Ítalo Vitorino  
-**Sprint:** 1 | **Prazo:** 11/05/2026
+**Aluno:** Ítalo Vitorino
 
 ---
 
@@ -14,7 +13,15 @@ O fluxo central começa quando o cliente escolhe um chef e envia um briefing det
 
 ---
 
-## 2. Perfis de Usuário
+## 2. Justificativa
+
+Atualmente, a contratação de profissionais da gastronomia para eventos particulares ainda depende muito de indicações e contatos pessoais. Em ocasiões como churrascos, aniversários, jantares especiais, viagens ou confraternizações, muitas pessoas têm dificuldade em encontrar churrasqueiros, pizzaiolos, chefs de cozinha e outros profissionais qualificados, além de não conseguirem comparar facilmente preços, avaliações e disponibilidade.
+
+O Chef em Casa surge para facilitar esse processo, reunindo em uma única plataforma chefs e profissionais gastronômicos próximos ao cliente. O aplicativo permite visualizar especialidades, avaliações e propostas comerciais, tornando a contratação mais prática, segura e organizada tanto para quem busca o serviço quanto para os profissionais que desejam ampliar sua visibilidade e oportunidades de trabalho.
+
+---
+
+## 3. Perfis de Usuário
 
 | Perfil | Role no sistema | Responsabilidades |
 |--------|-----------------|-------------------|
@@ -23,25 +30,25 @@ O fluxo central começa quando o cliente escolhe um chef e envia um briefing det
 
 ---
 
-## 3. Principais Funcionalidades
+## 4. Principais Funcionalidades
 
-### 3.1 Autenticação e Cadastro
+### 4.1 Autenticação e Cadastro
 - Registro de usuário (cliente ou chef) com nome, e-mail, senha e perfil
 - Login com geração de JWT de acesso (TTL 15 min) e refresh token
 - Renovação de token via refresh token
 
-### 3.2 Gestão de Solicitações (fluxo principal)
+### 4.2 Gestão de Solicitações (fluxo principal)
 - Cliente cria uma solicitação com briefing (tipo de evento, data, número de convidados, endereço, duração)
 - Chef visualiza solicitações recebidas e envia proposta (valor, descrição, prazo de validade)
 - Cliente pode: **aceitar**, **rejeitar** ou **solicitar revisão** da proposta
 - Após aceite, reserva é confirmada; serviço pode ser concluído ou cancelado
 
-### 3.3 Pagamento (simulado)
+### 4.3 Pagamento (simulado)
 - Ao aceitar a proposta, o sistema inicia o fluxo de pagamento simulado
 - Eventos `pagamento.iniciado` e `pagamento.confirmado` são publicados no broker
 - Não há integração com gateway externo nesta fase — o pagamento é aprovado automaticamente para fins de demonstração
 
-### 3.4 Máquina de Estados da Solicitação
+### 4.4 Máquina de Estados da Solicitação
 
 ```
 AWAITING_PROPOSAL
@@ -58,12 +65,12 @@ RESERVATION_CONFIRMED
       └─ cancela ──► CANCELLED
 ```
 
-### 3.5 Tipos de Evento Suportados
+### 4.5 Tipos de Evento Suportados
 `PRIVATE_DINNER`, `LUNCH`, `CORPORATE_EVENT`, `TRAVEL`, `OTHER`
 
 ---
 
-## 4. Arquitetura do Sistema
+## 5. Arquitetura do Sistema
 
 ![Diagrama de Arquitetura](images/diagrama_de_arquitetura.png)
 
@@ -75,7 +82,7 @@ RESERVATION_CONFIRMED
 
 ---
 
-## 5. Schema do Banco de Dados
+## 6. Schema do Banco de Dados
 
 O banco é PostgreSQL com schemas separados por bounded context.
 
@@ -149,7 +156,7 @@ CREATE INDEX idx_proposals_solicitation  ON solicitations.proposals(solicitation
 
 ---
 
-## 6. Topologia de Eventos (RabbitMQ)
+## 7. Topologia de Eventos (RabbitMQ)
 
 Exchange: `chefemcasa.events` (topic, durable). Fila `notificacoes.queue` com bind em `#` consome todos os eventos e decide quais viram push notification.
 
