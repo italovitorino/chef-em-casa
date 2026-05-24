@@ -47,9 +47,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(InvalidTransitionException.class)
     public ResponseEntity<ProblemDetail> handleInvalidTransition(InvalidTransitionException ex) {
-        var pd = ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        var pd = ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
         pd.setTitle("Transição inválida");
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(pd);
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(pd);
     }
 
     @ExceptionHandler(UnauthorizedActorException.class)
@@ -61,8 +61,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(InvalidSolicitationTargetException.class)
     public ResponseEntity<ProblemDetail> handleInvalidSolicitationTarget(InvalidSolicitationTargetException ex) {
-        var pd = ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        var pd = ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
         pd.setTitle("Destinatário inválido");
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(pd);
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(pd);
     }
 }
