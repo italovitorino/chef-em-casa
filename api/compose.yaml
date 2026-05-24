@@ -59,7 +59,7 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
-      RABBITMQ_DEFAULT_VHOST: chef
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-chef}
       RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE:-chef-em-casa-cookie}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq/mnesia
