@@ -59,8 +59,9 @@ public class SolicitationService {
         var briefing = new Briefing(request.eventType(), request.eventDate(),
                 request.numberOfGuests(), address, request.estimatedDurationMinutes(), request.notes());
         var solicitation = Solicitation.open(clientId, request.chefId(), briefing);
+        var events = solicitation.drainEvents();
         var saved = solicitationRepository.save(solicitation);
-        publishEvents(saved.drainEvents());
+        publishEvents(events);
         return saved;
     }
 
@@ -71,8 +72,9 @@ public class SolicitationService {
         if (!solicitation.getChefId().equals(chefId)) throw new UnauthorizedActorException();
         solicitation.submitProposal(request.totalAmount(), request.serviceDescription(),
                 request.validUntil(), request.notes());
+        var events = solicitation.drainEvents();
         var saved = solicitationRepository.save(solicitation);
-        publishEvents(saved.drainEvents());
+        publishEvents(events);
         return saved;
     }
 
@@ -80,8 +82,9 @@ public class SolicitationService {
     public Solicitation acceptProposal(UUID solicitationId, UUID clientId) {
         var solicitation = findOwnedByClient(solicitationId, clientId);
         solicitation.acceptProposal();
+        var events = solicitation.drainEvents();
         var saved = solicitationRepository.save(solicitation);
-        publishEvents(saved.drainEvents());
+        publishEvents(events);
         return saved;
     }
 
@@ -89,8 +92,9 @@ public class SolicitationService {
     public Solicitation rejectProposal(UUID solicitationId, UUID clientId) {
         var solicitation = findOwnedByClient(solicitationId, clientId);
         solicitation.rejectProposal();
+        var events = solicitation.drainEvents();
         var saved = solicitationRepository.save(solicitation);
-        publishEvents(saved.drainEvents());
+        publishEvents(events);
         return saved;
     }
 
@@ -98,8 +102,9 @@ public class SolicitationService {
     public Solicitation requestRevision(UUID solicitationId, UUID clientId) {
         var solicitation = findOwnedByClient(solicitationId, clientId);
         solicitation.requestRevision();
+        var events = solicitation.drainEvents();
         var saved = solicitationRepository.save(solicitation);
-        publishEvents(saved.drainEvents());
+        publishEvents(events);
         return saved;
     }
 
@@ -107,8 +112,9 @@ public class SolicitationService {
     public Solicitation completeService(UUID solicitationId, UUID clientId) {
         var solicitation = findOwnedByClient(solicitationId, clientId);
         solicitation.completeService();
+        var events = solicitation.drainEvents();
         var saved = solicitationRepository.save(solicitation);
-        publishEvents(saved.drainEvents());
+        publishEvents(events);
         return saved;
     }
 
@@ -120,8 +126,9 @@ public class SolicitationService {
             throw new UnauthorizedActorException();
         }
         solicitation.cancel(actorId);
+        var events = solicitation.drainEvents();
         var saved = solicitationRepository.save(solicitation);
-        publishEvents(saved.drainEvents());
+        publishEvents(events);
         return saved;
     }
 

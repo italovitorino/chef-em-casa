@@ -50,9 +50,9 @@ public class AuthService {
             throw new EmailAlreadyRegisteredException(request.email());
         }
         var user = User.register(request.name(), request.email(), passwordEncoder.encode(request.password()), request.role());
+        var events = user.drainEvents();
         var saved = userRepository.save(user);
-        saved.drainEvents().forEach(event ->
-                rabbitTemplate.convertAndSend(EVENTS_EXCHANGE, USER_REGISTERED_KEY, event));
+        events.forEach(event -> rabbitTemplate.convertAndSend(EVENTS_EXCHANGE, USER_REGISTERED_KEY, event));
         return saved;
     }
 
