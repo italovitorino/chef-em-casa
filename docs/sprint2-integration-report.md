@@ -66,14 +66,9 @@ INFO  WelcomeEmailConsumer    : [WELCOME-EMAIL] Enviando boas-vindas para joao@e
 
 ## Desafios Encontrados
 
-1. **Deserialização de Java Records:** O `Jackson2JsonMessageConverter` inclui o header
-   `__TypeId__` em cada mensagem, permitindo deserialização automática no consumidor.
-   Por produtor e consumidor residirem no mesmo classpath, o mapeamento de tipos funciona
-   sem configuração adicional de type mapping.
+1. **Deserialização de Java Records:** O `Jackson2JsonMessageConverter` foi marcado como depreciado no Spring. A solução adotada foi usar o `JacksonJsonMessageConverter`.
 
-2. **Durabilidade das filas:** As filas foram declaradas como duráveis (`QueueBuilder.durable()`)
-   para sobreviver a reinicializações do broker RabbitMQ, evitando perda de mensagens
-   durante o desenvolvimento com Podman Compose.
+2. **Permissão de arquivo no container RabbitMQ:** a primeira inicialização do ambiente, o container do RabbitMQ falhava ao subir, registrando erro `eacces` ao tentar acessar o arquivo `.erlang.cookie`. O sintoma era a interrupção imediata do broker, antes mesmo de o painel de administração ficar disponível. O diagnóstico apontou que o volume persistente montado pelo Podman havia preservado as permissões de uma execução anterior, feita sob um usuário (UID) diferente — condição que impedia o processo do RabbitMQ de ler o cookie de autenticação do cluster Erlang. A solução foi executar `podman compose down -v` para remover os volumes órfãos e recriar os containers a partir de um estado limpo, permitindo que o `.erlang.cookie` fosse gerado com as permissões corretas do usuário atual.
 
 3. **Ausência de bindings anteriores:** A versão inicial de `RabbitMQConfig` declarava apenas
    o exchange e o `RabbitTemplate`, sem filas nem bindings. Sem bindings, as mensagens
