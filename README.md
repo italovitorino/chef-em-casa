@@ -2,7 +2,7 @@
 
 Marketplace para contratação de chefes de cozinha particulares. A plataforma conecta clientes que desejam um chef para eventos privados — jantares em casa, almoços, viagens e ocasiões especiais — com profissionais disponíveis para prestar o serviço.
 
-O fluxo central começa quando o cliente escolhe um chef e envia um briefing detalhando o evento (tipo, data, número de convidados, endereço e duração estimada). O chef recebe a solicitação e responde com uma proposta comercial. A partir daí, cliente e chef negociam: o cliente pode aceitar, rejeitar ou solicitar uma revisão da proposta. Após o aceite, a reserva é confirmada e o serviço é agendado. Ao término, o cliente marca o serviço como concluído e o pagamento é processado. O ciclo se encerra com avaliação mútua entre cliente e chef.
+O fluxo central começa quando o cliente publica um briefing aberto detalhando o evento (tipo, data, número de convidados, endereço e duração estimada). Chefs interessados expressam interesse no briefing, e o cliente pode iniciar negociações simultâneas com múltiplos chefs. Dentro de cada negociação, o chef envia uma proposta comercial e cliente e chef negociam: o cliente pode aceitar, rejeitar ou solicitar uma revisão da proposta. Ao aceitar uma proposta, a reserva é confirmada, o briefing é encerrado automaticamente e as demais negociações abertas são canceladas. Briefings sem proposta aceita expiram automaticamente após 72 horas. Ao término do serviço, o serviço é marcado como concluído.
 
 ## Stack
 

@@ -142,20 +142,19 @@ Authorization: Bearer <accessToken>
 
 ---
 
-## Contexto: Solicitações (`/api/solicitations`)
+## Contexto: Briefings (`/api/briefings`)
 
 > Todos os endpoints deste contexto requerem `Authorization: Bearer <accessToken>`.
 
 ---
 
-### POST /api/solicitations
+### POST /api/briefings
 
-Cria uma nova solicitação com briefing. Exclusivo para `CLIENT`.
+Publica um briefing aberto. Exclusivo para `CLIENT`.
 
 **Request**
 ```json
 {
-  "chefId": "b2c3d4e5-0000-0000-0000-000000000002",
   "eventType": "PRIVATE_DINNER",
   "eventDate": "2026-06-15",
   "numberOfGuests": 8,
@@ -178,9 +177,8 @@ Cria uma nova solicitação com briefing. Exclusivo para `CLIENT`.
 {
   "id": "c3d4e5f6-0000-0000-0000-000000000003",
   "clientId": "a1b2c3d4-0000-0000-0000-000000000001",
-  "chefId": "b2c3d4e5-0000-0000-0000-000000000002",
-  "status": "AWAITING_PROPOSAL",
-  "briefing": {
+  "status": "OPEN",
+  "details": {
     "eventType": "PRIVATE_DINNER",
     "eventDate": "2026-06-15",
     "numberOfGuests": 8,
@@ -194,10 +192,10 @@ Cria uma nova solicitação com briefing. Exclusivo para `CLIENT`.
     "estimatedDurationMinutes": 180,
     "notes": "Prefiro cardápio italiano. Sem glúten para dois convidados."
   },
-  "currentProposal": null,
-  "proposalHistory": [],
+  "interests": [],
   "createdAt": "2026-05-11T12:30:00Z",
-  "updatedAt": "2026-05-11T12:30:00Z"
+  "expiresAt": "2026-05-14T12:30:00Z",
+  "closedAt": null
 }
 ```
 
@@ -210,44 +208,105 @@ Cria uma nova solicitação com briefing. Exclusivo para `CLIENT`.
 
 ---
 
-### GET /api/solicitations/{id}
+### GET /api/briefings
 
-Retorna uma solicitação pelo ID. Cliente vê apenas suas próprias; chef vê apenas as recebidas.
+Lista briefings. Clientes veem os seus; chefs veem todos os `OPEN`.
 
-**Path param:** `id` — UUID da solicitação
+**Response `200 OK`** — array de briefings no mesmo formato do `POST`.
+
+---
+
+### GET /api/briefings/{id}
+
+Retorna um briefing pelo ID.
+
+**Erros possíveis**
+
+| Status | Motivo |
+|--------|--------|
+| `403` | Usuário não tem acesso |
+| `404` | Briefing não encontrado |
+
+---
+
+### POST /api/briefings/{id}/close
+
+Fecha o briefing manualmente. Exclusivo para `CLIENT` dono do briefing.
+
+**Response `200 OK`** — retorna o briefing com `status: "CLOSED"`.
+
+**Erros possíveis**
+
+| Status | Motivo |
+|--------|--------|
+| `403` | Usuário não é o cliente dono |
+| `404` | Briefing não encontrado |
+
+---
+
+### POST /api/briefings/{id}/interests
+
+Chef expressa interesse no briefing. Exclusivo para `CHEF`.
+
+**Request (opcional)**
+```json
+{
+  "message": "Tenho experiência em eventos similares com cardápio italiano."
+}
+```
+
+**Response `200 OK`** — retorna o briefing atualizado com o novo interesse na lista `interests`.
+
+**Erros possíveis**
+
+| Status | Motivo |
+|--------|--------|
+| `403` | Usuário não é `CHEF` |
+| `404` | Briefing não encontrado |
+| `422` | Briefing encerrado ou chef já expressou interesse |
+
+---
+
+### GET /api/briefings/{id}/interests
+
+Lista chefs que expressaram interesse. Exclusivo para `CLIENT` dono do briefing.
 
 **Response `200 OK`**
 ```json
+[
+  {
+    "chefId": "f1e2d3c4-0000-0000-0000-000000000003",
+    "expressedAt": "2026-05-11T13:00:00Z",
+    "message": "Tenho experiência em eventos similares com cardápio italiano."
+  }
+]
+```
+
+---
+
+### POST /api/briefings/{id}/negotiations
+
+Cliente inicia negociação com um chef que expressou interesse. Exclusivo para `CLIENT`.
+
+**Request**
+```json
 {
-  "id": "c3d4e5f6-0000-0000-0000-000000000003",
+  "chefId": "f1e2d3c4-0000-0000-0000-000000000003"
+}
+```
+
+**Response `201 Created`**
+```json
+{
+  "id": "e2f3a4b5-0000-0000-0000-000000000005",
+  "briefingId": "c3d4e5f6-0000-0000-0000-000000000003",
   "clientId": "a1b2c3d4-0000-0000-0000-000000000001",
-  "chefId": "b2c3d4e5-0000-0000-0000-000000000002",
-  "status": "PROPOSAL_SENT",
-  "briefing": {
-    "eventType": "PRIVATE_DINNER",
-    "eventDate": "2026-06-15",
-    "numberOfGuests": 8,
-    "location": {
-      "street": "Rua das Acácias",
-      "number": "42",
-      "city": "Belo Horizonte",
-      "state": "MG",
-      "zipCode": "30130-010"
-    },
-    "estimatedDurationMinutes": 180,
-    "notes": "Prefiro cardápio italiano. Sem glúten para dois convidados."
-  },
-  "currentProposal": {
-    "id": "d4e5f6g7-0000-0000-0000-000000000004",
-    "totalAmount": 850.00,
-    "serviceDescription": "Menu degustação italiano 5 tempos com harmonização",
-    "validUntil": "2026-05-18",
-    "notes": "Inclui deslocamento e ingredientes",
-    "sentAt": "2026-05-11T14:00:00Z"
-  },
+  "chefId": "f1e2d3c4-0000-0000-0000-000000000003",
+  "status": "AWAITING_PROPOSAL",
+  "currentProposal": null,
   "proposalHistory": [],
-  "createdAt": "2026-05-11T12:30:00Z",
-  "updatedAt": "2026-05-11T14:00:00Z"
+  "createdAt": "2026-05-11T13:10:00Z",
+  "updatedAt": "2026-05-11T13:10:00Z"
 }
 ```
 
@@ -255,39 +314,42 @@ Retorna uma solicitação pelo ID. Cliente vê apenas suas próprias; chef vê a
 
 | Status | Motivo |
 |--------|--------|
-| `403` | Solicitação pertence a outro cliente/chef |
-| `404` | Solicitação não encontrada |
+| `403` | Usuário não é o cliente dono do briefing |
+| `404` | Briefing não encontrado |
+| `422` | Chef não expressou interesse neste briefing |
 
 ---
 
-### GET /api/solicitations
+### GET /api/briefings/{briefingId}/negotiations
 
-Lista todas as solicitações do usuário autenticado. Clientes veem as que criaram; chefs veem as recebidas.
+Lista negociações de um briefing. Exclusivo para `CLIENT` dono do briefing.
 
-**Response `200 OK`**
-```json
-[
-  {
-    "id": "c3d4e5f6-0000-0000-0000-000000000003",
-    "clientId": "a1b2c3d4-0000-0000-0000-000000000001",
-    "chefId": "b2c3d4e5-0000-0000-0000-000000000002",
-    "status": "AWAITING_PROPOSAL",
-    "briefing": { "..." },
-    "currentProposal": null,
-    "proposalHistory": [],
-    "createdAt": "2026-05-11T12:30:00Z",
-    "updatedAt": "2026-05-11T12:30:00Z"
-  }
-]
-```
+**Response `200 OK`** — array de negociações no mesmo formato.
 
 ---
 
-### POST /api/solicitations/{id}/proposals
+## Contexto: Negociações (`/api/negotiations`)
 
-Chef envia proposta para uma solicitação em `AWAITING_PROPOSAL`. Exclusivo para `CHEF`.
+> Todos os endpoints deste contexto requerem `Authorization: Bearer <accessToken>`.
 
-**Path param:** `id` — UUID da solicitação
+---
+
+### GET /api/negotiations/{id}
+
+Retorna uma negociação. Cliente e chef da negociação têm acesso.
+
+**Erros possíveis**
+
+| Status | Motivo |
+|--------|--------|
+| `403` | Usuário não é parte desta negociação |
+| `404` | Negociação não encontrada |
+
+---
+
+### POST /api/negotiations/{id}/proposals
+
+Chef envia proposta. Exclusivo para o `CHEF` da negociação. Negociação deve estar em `AWAITING_PROPOSAL`.
 
 **Request**
 ```json
@@ -299,108 +361,96 @@ Chef envia proposta para uma solicitação em `AWAITING_PROPOSAL`. Exclusivo par
 }
 ```
 
-> `totalAmount`: mínimo `0.01`
-
-**Response `200 OK`** — retorna a solicitação atualizada com `status: "PROPOSAL_SENT"` e `currentProposal` preenchida.
+**Response `200 OK`** — retorna a negociação com `status: "PROPOSAL_SENT"` e `currentProposal` preenchida.
 
 **Erros possíveis**
 
 | Status | Motivo |
 |--------|--------|
-| `400` | Campos inválidos |
-| `403` | Usuário não é o chef da solicitação ou não é `CHEF` |
-| `404` | Solicitação não encontrada |
-| `409` | Solicitação não está em `AWAITING_PROPOSAL` |
+| `403` | Usuário não é o chef desta negociação |
+| `404` | Negociação não encontrada |
+| `422` | Negociação não está em `AWAITING_PROPOSAL` |
 
 ---
 
-### POST /api/solicitations/{id}/proposals/accept
+### POST /api/negotiations/{id}/proposals/accept
 
-Cliente aceita a proposta atual. Exclusivo para `CLIENT`. Transição: `PROPOSAL_SENT` → `RESERVATION_CONFIRMED`.
+Cliente aceita a proposta. Transição: `PROPOSAL_SENT` → `RESERVATION_CONFIRMED`.  
+O briefing pai é fechado automaticamente e demais negociações abertas são canceladas.
 
-**Path param:** `id` — UUID da solicitação
-
-**Response `200 OK`** — retorna a solicitação com `status: "RESERVATION_CONFIRMED"`.
+**Response `200 OK`** — retorna a negociação com `status: "RESERVATION_CONFIRMED"`.
 
 **Erros possíveis**
 
 | Status | Motivo |
 |--------|--------|
-| `403` | Usuário não é o cliente da solicitação |
-| `404` | Solicitação não encontrada |
-| `409` | Solicitação não está em `PROPOSAL_SENT` |
+| `403` | Usuário não é o cliente desta negociação |
+| `404` | Negociação não encontrada |
+| `422` | Negociação não está em `PROPOSAL_SENT` |
 
 ---
 
-### POST /api/solicitations/{id}/proposals/reject
+### POST /api/negotiations/{id}/proposals/reject
 
-Cliente rejeita a proposta. Exclusivo para `CLIENT`. Transição: `PROPOSAL_SENT` → `CANCELLED`.
+Cliente rejeita a proposta. Transição: `PROPOSAL_SENT` → `AWAITING_PROPOSAL`.
 
-**Path param:** `id` — UUID da solicitação
-
-**Response `200 OK`** — retorna a solicitação com `status: "CANCELLED"`.
+**Response `200 OK`** — retorna a negociação com `status: "AWAITING_PROPOSAL"` e proposta movida para `proposalHistory`.
 
 **Erros possíveis**
 
 | Status | Motivo |
 |--------|--------|
-| `403` | Usuário não é o cliente da solicitação |
-| `404` | Solicitação não encontrada |
-| `409` | Solicitação não está em `PROPOSAL_SENT` |
+| `403` | Usuário não é o cliente desta negociação |
+| `404` | Negociação não encontrada |
+| `422` | Negociação não está em `PROPOSAL_SENT` |
 
 ---
 
-### POST /api/solicitations/{id}/proposals/request-revision
+### POST /api/negotiations/{id}/proposals/request-revision
 
-Cliente solicita revisão da proposta. Exclusivo para `CLIENT`. Transição: `PROPOSAL_SENT` → `AWAITING_PROPOSAL`.
+Cliente solicita revisão. Transição: `PROPOSAL_SENT` → `AWAITING_PROPOSAL`.
 
-**Path param:** `id` — UUID da solicitação
-
-**Response `200 OK`** — retorna a solicitação com `status: "AWAITING_PROPOSAL"` e a proposta rejeitada movida para `proposalHistory`.
+**Response `200 OK`** — retorna a negociação com `status: "AWAITING_PROPOSAL"`.
 
 **Erros possíveis**
 
 | Status | Motivo |
 |--------|--------|
-| `403` | Usuário não é o cliente da solicitação |
-| `404` | Solicitação não encontrada |
-| `409` | Solicitação não está em `PROPOSAL_SENT` |
+| `403` | Usuário não é o cliente desta negociação |
+| `404` | Negociação não encontrada |
+| `422` | Negociação não está em `PROPOSAL_SENT` |
 
 ---
 
-### POST /api/solicitations/{id}/complete
+### POST /api/negotiations/{id}/complete
 
-Cliente marca o serviço como concluído. Exclusivo para `CLIENT`. Transição: `RESERVATION_CONFIRMED` → `SERVICE_COMPLETED`.
+Marca o serviço como concluído. Disponível para cliente e chef. Transição: `RESERVATION_CONFIRMED` → `SERVICE_COMPLETED`.
 
-**Path param:** `id` — UUID da solicitação
-
-**Response `200 OK`** — retorna a solicitação com `status: "SERVICE_COMPLETED"`.
+**Response `200 OK`** — retorna a negociação com `status: "SERVICE_COMPLETED"`.
 
 **Erros possíveis**
 
 | Status | Motivo |
 |--------|--------|
-| `403` | Usuário não é o cliente da solicitação |
-| `404` | Solicitação não encontrada |
-| `409` | Solicitação não está em `RESERVATION_CONFIRMED` |
+| `403` | Usuário não é parte desta negociação |
+| `404` | Negociação não encontrada |
+| `422` | Negociação não está em `RESERVATION_CONFIRMED` |
 
 ---
 
-### POST /api/solicitations/{id}/cancel
+### POST /api/negotiations/{id}/cancel
 
-Cancela a solicitação. Disponível para cliente e chef. Transição: qualquer status não-terminal → `CANCELLED`.
+Cancela a negociação. Disponível para cliente e chef. Transição: qualquer status não-terminal → `CANCELLED`.
 
-**Path param:** `id` — UUID da solicitação
-
-**Response `200 OK`** — retorna a solicitação com `status: "CANCELLED"`.
+**Response `200 OK`** — retorna a negociação com `status: "CANCELLED"`.
 
 **Erros possíveis**
 
 | Status | Motivo |
 |--------|--------|
-| `403` | Usuário não é parte desta solicitação |
-| `404` | Solicitação não encontrada |
-| `409` | Solicitação já está em estado terminal (`CANCELLED` ou `SERVICE_COMPLETED`) |
+| `403` | Usuário não é parte desta negociação |
+| `404` | Negociação não encontrada |
+| `422` | Negociação já está em estado terminal |
 
 ---
 
@@ -412,12 +462,18 @@ Cancela a solicitação. Disponível para cliente e chef. Transição: qualquer 
 | `POST` | `/api/auth/login` | Não | — |
 | `POST` | `/api/auth/refresh` | Não | — |
 | `GET` | `/api/users/{id}` | JWT | próprio usuário |
-| `POST` | `/api/solicitations` | JWT | `CLIENT` |
-| `GET` | `/api/solicitations` | JWT | `CLIENT` ou `CHEF` |
-| `GET` | `/api/solicitations/{id}` | JWT | `CLIENT` ou `CHEF` |
-| `POST` | `/api/solicitations/{id}/proposals` | JWT | `CHEF` |
-| `POST` | `/api/solicitations/{id}/proposals/accept` | JWT | `CLIENT` |
-| `POST` | `/api/solicitations/{id}/proposals/reject` | JWT | `CLIENT` |
-| `POST` | `/api/solicitations/{id}/proposals/request-revision` | JWT | `CLIENT` |
-| `POST` | `/api/solicitations/{id}/complete` | JWT | `CLIENT` |
-| `POST` | `/api/solicitations/{id}/cancel` | JWT | `CLIENT` ou `CHEF` |
+| `POST` | `/api/briefings` | JWT | `CLIENT` |
+| `GET` | `/api/briefings` | JWT | `CLIENT` ou `CHEF` |
+| `GET` | `/api/briefings/{id}` | JWT | `CLIENT` ou `CHEF` |
+| `POST` | `/api/briefings/{id}/close` | JWT | `CLIENT` |
+| `POST` | `/api/briefings/{id}/interests` | JWT | `CHEF` |
+| `GET` | `/api/briefings/{id}/interests` | JWT | `CLIENT` |
+| `POST` | `/api/briefings/{id}/negotiations` | JWT | `CLIENT` |
+| `GET` | `/api/briefings/{briefingId}/negotiations` | JWT | `CLIENT` |
+| `GET` | `/api/negotiations/{id}` | JWT | `CLIENT` ou `CHEF` |
+| `POST` | `/api/negotiations/{id}/proposals` | JWT | `CHEF` |
+| `POST` | `/api/negotiations/{id}/proposals/accept` | JWT | `CLIENT` |
+| `POST` | `/api/negotiations/{id}/proposals/reject` | JWT | `CLIENT` |
+| `POST` | `/api/negotiations/{id}/proposals/request-revision` | JWT | `CLIENT` |
+| `POST` | `/api/negotiations/{id}/complete` | JWT | `CLIENT` ou `CHEF` |
+| `POST` | `/api/negotiations/{id}/cancel` | JWT | `CLIENT` ou `CHEF` |
