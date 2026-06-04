@@ -12,11 +12,13 @@ public class RabbitMQConfig {
 
     public static final String EXCHANGE = "chefemcasa.events";
 
-    public static final String WELCOME_EMAIL_QUEUE = "chefemcasa.identity.welcome-email";
-    public static final String NEW_SOLICITATION_QUEUE = "chefemcasa.solicitations.new-solicitation";
+    public static final String WELCOME_EMAIL_QUEUE          = "chefemcasa.identity.welcome-email";
+    public static final String NEW_BRIEFING_QUEUE           = "chefemcasa.briefings.new-briefing";
+    public static final String RESERVATION_CONFIRMED_QUEUE  = "chefemcasa.negotiations.reservation-confirmed";
 
-    private static final String USER_REGISTERED_KEY = "identity.user.registered";
-    private static final String BRIEFING_SUBMITTED_KEY = "solicitations.briefing.submitted";
+    private static final String USER_REGISTERED_KEY       = "identity.user.registered";
+    private static final String BRIEFING_PUBLISHED_KEY    = "briefings.briefing.published";
+    private static final String RESERVATION_CONFIRMED_KEY = "negotiations.reservation.confirmed";
 
     @Bean
     public TopicExchange chefEmCasaEventsExchange() {
@@ -29,22 +31,30 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue newSolicitationQueue() {
-        return QueueBuilder.durable(NEW_SOLICITATION_QUEUE).build();
+    public Queue newBriefingQueue() {
+        return QueueBuilder.durable(NEW_BRIEFING_QUEUE).build();
+    }
+
+    @Bean
+    public Queue reservationConfirmedQueue() {
+        return QueueBuilder.durable(RESERVATION_CONFIRMED_QUEUE).build();
     }
 
     @Bean
     public Binding welcomeEmailBinding(Queue welcomeEmailQueue, TopicExchange chefEmCasaEventsExchange) {
-        return BindingBuilder.bind(welcomeEmailQueue)
-                .to(chefEmCasaEventsExchange)
-                .with(USER_REGISTERED_KEY);
+        return BindingBuilder.bind(welcomeEmailQueue).to(chefEmCasaEventsExchange).with(USER_REGISTERED_KEY);
     }
 
     @Bean
-    public Binding newSolicitationBinding(Queue newSolicitationQueue, TopicExchange chefEmCasaEventsExchange) {
-        return BindingBuilder.bind(newSolicitationQueue)
-                .to(chefEmCasaEventsExchange)
-                .with(BRIEFING_SUBMITTED_KEY);
+    public Binding newBriefingBinding(Queue newBriefingQueue, TopicExchange chefEmCasaEventsExchange) {
+        return BindingBuilder.bind(newBriefingQueue).to(chefEmCasaEventsExchange).with(BRIEFING_PUBLISHED_KEY);
+    }
+
+    @Bean
+    public Binding reservationConfirmedBinding(Queue reservationConfirmedQueue,
+                                               TopicExchange chefEmCasaEventsExchange) {
+        return BindingBuilder.bind(reservationConfirmedQueue)
+                .to(chefEmCasaEventsExchange).with(RESERVATION_CONFIRMED_KEY);
     }
 
     @Bean

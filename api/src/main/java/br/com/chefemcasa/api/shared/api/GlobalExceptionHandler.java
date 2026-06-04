@@ -1,12 +1,13 @@
 package br.com.chefemcasa.api.shared.api;
 
+import br.com.chefemcasa.api.briefings.domain.exception.BriefingNotFoundException;
+import br.com.chefemcasa.api.briefings.domain.exception.ChefHasNotExpressedInterestException;
 import br.com.chefemcasa.api.identity.domain.exception.EmailAlreadyRegisteredException;
 import br.com.chefemcasa.api.identity.domain.exception.InvalidCredentialsException;
 import br.com.chefemcasa.api.identity.domain.exception.UserNotFoundException;
-import br.com.chefemcasa.api.solicitations.domain.exception.InvalidSolicitationTargetException;
-import br.com.chefemcasa.api.solicitations.domain.exception.InvalidTransitionException;
-import br.com.chefemcasa.api.solicitations.domain.exception.SolicitationNotFoundException;
-import br.com.chefemcasa.api.solicitations.domain.exception.UnauthorizedActorException;
+import br.com.chefemcasa.api.negotiations.domain.exception.InvalidTransitionException;
+import br.com.chefemcasa.api.negotiations.domain.exception.NegotiationNotFoundException;
+import br.com.chefemcasa.api.shared.domain.exception.UnauthorizedActorException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -38,8 +39,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pd);
     }
 
-    @ExceptionHandler(SolicitationNotFoundException.class)
-    public ResponseEntity<ProblemDetail> handleSolicitationNotFound(SolicitationNotFoundException ex) {
+    @ExceptionHandler(BriefingNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleBriefingNotFound(BriefingNotFoundException ex) {
+        var pd = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        pd.setTitle("Não encontrado");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pd);
+    }
+
+    @ExceptionHandler(NegotiationNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleNegotiationNotFound(NegotiationNotFoundException ex) {
         var pd = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         pd.setTitle("Não encontrado");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pd);
@@ -59,10 +67,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(pd);
     }
 
-    @ExceptionHandler(InvalidSolicitationTargetException.class)
-    public ResponseEntity<ProblemDetail> handleInvalidSolicitationTarget(InvalidSolicitationTargetException ex) {
+    @ExceptionHandler(ChefHasNotExpressedInterestException.class)
+    public ResponseEntity<ProblemDetail> handleChefHasNotExpressedInterest(ChefHasNotExpressedInterestException ex) {
         var pd = ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
-        pd.setTitle("Destinatário inválido");
+        pd.setTitle("Interesse não registrado");
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(pd);
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ProblemDetail> handleIllegalState(IllegalStateException ex) {
+        var pd = ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
+        pd.setTitle("Operação inválida");
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(pd);
     }
 }
