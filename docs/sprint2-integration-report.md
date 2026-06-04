@@ -11,8 +11,8 @@ desenvolvimento.
 ## Padrão Utilizado: Topic Exchange + Pub/Sub
 
 Adotou-se o padrão **Topic Exchange**, que roteia mensagens com base em chaves compostas
-por segmentos separados por ponto (ex.: `solicitations.briefing.submitted`). Esse modelo
-permite filtrar eventos por contexto de domínio (`identity.*`, `solicitations.*`) e adicionar
+por segmentos separados por ponto (ex.: `briefings.briefing.published`). Esse modelo
+permite filtrar eventos por contexto de domínio (`identity.*`, `briefings.*`, `negotiations.*`) e adicionar
 novos consumidores sem qualquer alteração nos produtores — princípio fundamental de
 arquiteturas orientadas a eventos.
 
@@ -24,7 +24,8 @@ arquiteturas orientadas a eventos.
 | Fila | Binding (routing key) | Consumidor |
 |------|-----------------------|------------|
 | `chefemcasa.identity.welcome-email` | `identity.user.registered` | `WelcomeEmailConsumer` |
-| `chefemcasa.solicitations.new-solicitation` | `solicitations.briefing.submitted` | `NewSolicitationConsumer` |
+| `chefemcasa.briefings.new-briefing` | `briefings.briefing.published` | `NewBriefingConsumer` |
+| `chefemcasa.negotiations.reservation-confirmed` | `negotiations.reservation.confirmed` | `ReservationConfirmedHandler` |
 
 ### Produtores
 
@@ -34,21 +35,24 @@ via `RabbitTemplate.convertAndSend()` com serialização Jackson (JSON):
 | Serviço | Evento publicado | Routing Key |
 |---------|-----------------|-------------|
 | `AuthService` | `UserRegistered` | `identity.user.registered` |
-| `SolicitationService` | `BriefingSubmitted` | `solicitations.briefing.submitted` |
-| `SolicitationService` | `ProposalSent` | `solicitations.proposal.sent` |
-| `SolicitationService` | `ProposalAccepted` | `solicitations.proposal.accepted` |
-| `SolicitationService` | `ProposalRejected` | `solicitations.proposal.rejected` |
-| `SolicitationService` | `ProposalRevisionRequested` | `solicitations.proposal.revision-requested` |
-| `SolicitationService` | `ReservationConfirmed` | `solicitations.reservation.confirmed` |
-| `SolicitationService` | `ServiceCompleted` | `solicitations.service.completed` |
-| `SolicitationService` | `SolicitationCancelled` | `solicitations.solicitation.cancelled` |
+| `BriefingService` | `BriefingPublished` | `briefings.briefing.published` |
+| `BriefingService` | `ChefInterestExpressed` | `briefings.interest.expressed` |
+| `BriefingService` | `NegotiationStarted` | `briefings.negotiation.started` |
+| `BriefingService` | `BriefingClosed` | `briefings.briefing.closed` |
+| `NegotiationService` | `ProposalSent` | `negotiations.proposal.sent` |
+| `NegotiationService` | `ProposalAccepted` | `negotiations.proposal.accepted` |
+| `NegotiationService` | `ProposalRejected` | `negotiations.proposal.rejected` |
+| `NegotiationService` | `ProposalRevisionRequested` | `negotiations.proposal.revision-requested` |
+| `NegotiationService` | `ReservationConfirmed` | `negotiations.reservation.confirmed` |
+| `NegotiationService` | `ServiceCompleted` | `negotiations.service.completed` |
+| `NegotiationService` | `NegotiationCancelled` | `negotiations.negotiation.cancelled` |
 
 ### Consumidores (Sprint 2)
 
 | Consumidor | Fila | Ação simulada |
 |------------|------|---------------|
 | `WelcomeEmailConsumer` | `chefemcasa.identity.welcome-email` | Loga envio de e-mail de boas-vindas ao novo usuário |
-| `NewSolicitationConsumer` | `chefemcasa.solicitations.new-solicitation` | Loga notificação ao chef sobre nova solicitação recebida |
+| `ReservationConfirmedHandler` | `chefemcasa.negotiations.reservation-confirmed` | Fecha o briefing pai e cancela negociações abertas restantes ao confirmar reserva |
 
 ## Demonstração de Assincronicidade
 
