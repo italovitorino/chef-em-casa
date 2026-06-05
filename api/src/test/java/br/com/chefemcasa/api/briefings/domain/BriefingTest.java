@@ -13,7 +13,7 @@ class BriefingTest {
 
     private Briefing openBriefing() {
         return Briefing.open(UUID.randomUUID(), new BriefingDetails(
-                EventType.PRIVATE_DINNER,
+                EventType.ROMANTIC_DINNER,
                 LocalDate.now().plusDays(7),
                 10,
                 new Address("Rua A", "1", "São Paulo", "SP", "01000-000"),
