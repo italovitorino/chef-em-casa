@@ -33,6 +33,7 @@ public class JwtTokenService {
                 .expiresAt(now.plus(accessTokenExpiryMinutes, ChronoUnit.MINUTES))
                 .claim("email", user.getEmail())
                 .claim("role", user.getRole().name())
+                .claim("name", user.getName())
                 .build();
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }

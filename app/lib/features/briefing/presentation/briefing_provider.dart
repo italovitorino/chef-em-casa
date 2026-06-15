@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/network/app_exception.dart';
 import '../../../data.dart';
 import '../../../screens/briefing_screen.dart' show BriefingData;
 import '../data/briefing_dto.dart';
@@ -33,8 +34,11 @@ class BriefingNotifier extends Notifier<BriefingState> {
       final briefing =
           await ref.read(briefingRepositoryProvider).publish(request);
       state = BriefingSuccess(briefing);
-    } on Exception catch (e) {
-      state = BriefingError(e.toString().replaceFirst('Exception: ', ''));
+    } catch (e) {
+      final msg = e is AppException
+          ? e.message
+          : e.toString().replaceFirst('Exception: ', '');
+      state = BriefingError(msg);
     }
   }
 

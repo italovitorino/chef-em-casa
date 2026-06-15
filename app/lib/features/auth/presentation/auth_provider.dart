@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/storage/token_storage.dart';
 import '../data/auth_repository.dart';
@@ -13,12 +14,31 @@ class AuthNotifier extends Notifier<AuthState> {
       final tokens = await ref
           .read(authRepositoryProvider)
           .login(email: email, password: password);
-      await ref
-          .read(tokenStorageProvider)
-          .save(accessToken: tokens.accessToken, refreshToken: tokens.refreshToken);
+      final userName = _nameFromJwt(tokens.accessToken);
+      await ref.read(tokenStorageProvider).save(
+            accessToken: tokens.accessToken,
+            refreshToken: tokens.refreshToken,
+            userName: userName,
+          );
       state = const AuthAuthenticated();
     } on Exception catch (e) {
       state = AuthError(e.toString().replaceFirst('Exception: ', ''));
+    }
+  }
+
+  String? _nameFromJwt(String token) {
+    try {
+      final parts = token.split('.');
+      if (parts.length != 3) return null;
+      var payload = parts[1];
+      while (payload.length % 4 != 0) {
+        payload += '=';
+      }
+      final decoded = utf8.decode(base64Url.decode(payload));
+      final claims = json.decode(decoded) as Map<String, dynamic>;
+      return claims['name'] as String?;
+    } catch (_) {
+      return null;
     }
   }
 
@@ -36,9 +56,12 @@ class AuthNotifier extends Notifier<AuthState> {
       final tokens = await ref
           .read(authRepositoryProvider)
           .login(email: email, password: password);
-      await ref
-          .read(tokenStorageProvider)
-          .save(accessToken: tokens.accessToken, refreshToken: tokens.refreshToken);
+      final userName = _nameFromJwt(tokens.accessToken);
+      await ref.read(tokenStorageProvider).save(
+            accessToken: tokens.accessToken,
+            refreshToken: tokens.refreshToken,
+            userName: userName,
+          );
       state = const AuthAuthenticated();
     } on Exception catch (e) {
       state = AuthError(e.toString().replaceFirst('Exception: ', ''));
