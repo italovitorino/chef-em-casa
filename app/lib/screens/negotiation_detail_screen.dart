@@ -4,6 +4,7 @@ import '../features/negotiation/data/negotiation_dto.dart';
 import '../features/negotiation/data/negotiation_repository.dart';
 import '../features/negotiation/presentation/negotiation_provider.dart';
 import '../theme.dart';
+import 'chat_screen.dart';
 
 // ── StartNegotiationScreen ────────────────────────────────────────────────────
 // Inicia negociação e redireciona para NegotiationDetailScreen.
@@ -231,6 +232,34 @@ class _NegotiationBody extends ConsumerWidget {
                 negotiation: negotiation, negotiationId: negotiationId),
           ),
         ),
+
+        // ── Chat ─────────────────────────────────────────────────────
+        if (negotiation.isActive)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(22, 12, 22, 0),
+              child: OutlinedButton.icon(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        ChatScreen(negotiationId: negotiationId),
+                  ),
+                ),
+                icon: const Icon(Icons.chat_bubble_outline, size: 18),
+                label: const Text('Abrir chat'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.terra,
+                  side: const BorderSide(color: AppColors.terra),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  minimumSize: const Size(double.infinity, 48),
+                  textStyle: AppText.manrope(
+                      fontSize: 14, fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
+          ),
 
         // ── History ──────────────────────────────────────────────────
         if (negotiation.proposalHistory.length > 1) ...[
