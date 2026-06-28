@@ -36,7 +36,7 @@ class ChatNotifier
     _stompClient = StompClient(
       config: StompConfig(
         url: ApiConfig.wsUrl,
-        connectHeaders: {'Authorization': 'Bearer $token'},
+        stompConnectHeaders: {'Authorization': 'Bearer $token'},
         heartbeatOutgoing: const Duration(seconds: 20),
         heartbeatIncoming: const Duration(seconds: 20),
         reconnectDelay: const Duration(seconds: 5),
