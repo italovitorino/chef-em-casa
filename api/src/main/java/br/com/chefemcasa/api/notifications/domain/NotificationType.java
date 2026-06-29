@@ -1,0 +1,13 @@
+package br.com.chefemcasa.api.notifications.domain;
+
+public enum NotificationType {
+    NEW_BRIEFING,
+    INTEREST_EXPRESSED,
+    NEGOTIATION_STARTED,
+    PROPOSAL_SENT,
+    PROPOSAL_ACCEPTED,
+    PROPOSAL_REJECTED,
+    PROPOSAL_REVISION_REQUESTED,
+    NEGOTIATION_CANCELLED,
+    SERVICE_COMPLETED
+}
