@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/network/app_exception.dart';
 import '../core/utils/format_utils.dart';
 import '../features/briefing/data/briefing_dto.dart';
 import '../features/briefing/data/briefing_repository.dart';
@@ -31,7 +32,17 @@ class _ChefBriefingDetailScreenState
         );
       }
     } catch (e) {
-      if (mounted) {
+      if (e is AppException && e.statusCode == 422) {
+        setState(() => _done = true);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(e.message.isNotEmpty
+                    ? e.message
+                    : 'Interesse já registrado')),
+          );
+        }
+      } else if (mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('Erro: $e')));
       }

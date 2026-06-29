@@ -9,7 +9,9 @@ class AppException implements Exception {
   factory AppException.fromDioException(DioException e) {
     final code = e.response?.statusCode;
     final body = e.response?.data;
-    final apiMessage = body is Map ? body['message'] as String? : null;
+    final apiMessage = body is Map
+        ? (body['detail'] as String? ?? body['message'] as String?)
+        : null;
     return AppException(
       apiMessage ?? _defaultMessage(code),
       statusCode: code,

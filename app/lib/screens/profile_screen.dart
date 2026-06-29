@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../features/auth/presentation/auth_provider.dart';
 import '../features/auth/presentation/user_provider.dart';
 import '../features/negotiation/presentation/chef_negotiations_provider.dart';
+import '../features/negotiation/presentation/client_negotiations_provider.dart';
 import '../theme.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -52,6 +53,7 @@ class ProfileScreen extends ConsumerWidget {
               ],
               const Divider(color: AppColors.line),
               const SizedBox(height: 24),
+              if (role == 'CLIENT') const _ClientStatsSection(),
               if (role == 'CHEF') const _ChefStatsSection(),
               const Spacer(),
               GestureDetector(
@@ -86,6 +88,34 @@ class ProfileScreen extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ClientStatsSection extends ConsumerWidget {
+  const _ClientStatsSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final negs = ref.watch(clientNegotiationsProvider).valueOrNull ?? [];
+    final completed = negs.where((n) => n.isCompleted).length;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Histórico', style: AppText.cormorant(fontSize: 22)),
+        const SizedBox(height: 14),
+        Row(
+          children: [
+            _StatCard(
+              icon: Icons.check_circle_outline,
+              label: 'Eventos finalizados',
+              value: '$completed',
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+      ],
     );
   }
 }
