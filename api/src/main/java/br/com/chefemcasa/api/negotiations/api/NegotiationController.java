@@ -1,5 +1,6 @@
 package br.com.chefemcasa.api.negotiations.api;
 
+import br.com.chefemcasa.api.identity.domain.model.UserRole;
 import br.com.chefemcasa.api.negotiations.api.dto.NegotiationResponse;
 import br.com.chefemcasa.api.negotiations.api.dto.SubmitProposalRequest;
 import br.com.chefemcasa.api.negotiations.application.NegotiationService;
@@ -18,6 +19,17 @@ public class NegotiationController {
 
     public NegotiationController(NegotiationService negotiationService) {
         this.negotiationService = negotiationService;
+    }
+
+    @GetMapping("/api/negotiations/mine")
+    public ResponseEntity<List<NegotiationResponse>> getMyNegotiations(JwtAuthenticationToken auth) {
+        var actorId = UUID.fromString(auth.getToken().getSubject());
+        var roleClaim = (String) auth.getToken().getClaim("role");
+        var role = UserRole.valueOf(roleClaim);
+        var list = negotiationService.findAll(actorId, role).stream()
+                .map(NegotiationMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/api/negotiations/{id}")
