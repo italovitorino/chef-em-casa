@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/utils/format_utils.dart';
 import '../features/briefing/data/briefing_dto.dart';
 import '../features/briefing/data/briefing_repository.dart';
 import '../theme.dart';
@@ -58,7 +59,7 @@ class _ChefBriefingDetailScreenState
             children: [
               Text(b.eventType, style: AppText.cormorant(fontSize: 28)),
               const SizedBox(height: 8),
-              _InfoRow(label: 'Data', value: b.eventDate),
+              _InfoRow(label: 'Data', value: formatDate(b.eventDate)),
               _InfoRow(label: 'Convidados', value: '${b.numberOfGuests} pessoas'),
               _InfoRow(label: 'Duração', value: '${b.hours}h'),
               if (b.city != null) _InfoRow(label: 'Cidade', value: b.city!),
