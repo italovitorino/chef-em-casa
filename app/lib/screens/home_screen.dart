@@ -5,6 +5,7 @@ import '../features/briefing/presentation/briefings_list_provider.dart';
 import '../theme.dart';
 import '../widgets/app_placeholder.dart';
 import 'briefing_screen.dart';
+import '../features/notification/presentation/notification_provider.dart';
 import 'briefings_screen.dart';
 import 'notifications_screen.dart';
 import 'profile_screen.dart';
@@ -65,6 +66,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             left: 0, right: 0, bottom: 0,
             child: _BottomTabBar(
               activeIndex: _activeTab,
+              unreadCount: ref.watch(unreadCountProvider),
               onTab: (i) {
                 if (i == 1 && _activeTab != 1) {
                   ref.invalidate(briefingsListProvider);
@@ -316,11 +318,13 @@ class _CreateCard extends StatelessWidget {
 // ── Bottom Tab Bar ────────────────────────────────────────────────────────────
 class _BottomTabBar extends StatelessWidget {
   final int activeIndex;
+  final int unreadCount;
   final ValueChanged<int> onTab;
   final VoidCallback onCreate;
 
   const _BottomTabBar({
     required this.activeIndex,
+    required this.unreadCount,
     required this.onTab,
     required this.onCreate,
   });
@@ -364,7 +368,31 @@ class _BottomTabBar extends StatelessWidget {
               child: const Icon(Icons.add, color: Colors.white, size: 28),
             ),
           ),
-          _TabItem(icon: Icons.notifications_outlined, label: 'Notificações', active: activeIndex == 2, onTap: () => onTab(2)),
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              _TabItem(
+                icon: Icons.notifications_outlined,
+                label: 'Notificações',
+                active: activeIndex == 2,
+                onTap: () => onTab(2),
+              ),
+              if (unreadCount > 0)
+                Positioned(
+                  top: 0,
+                  right: 6,
+                  child: Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: const BoxDecoration(
+                        color: AppColors.terra, shape: BoxShape.circle),
+                    child: Text(
+                      '$unreadCount',
+                      style: AppText.manrope(fontSize: 9, color: Colors.white),
+                    ),
+                  ),
+                ),
+            ],
+          ),
           _TabItem(icon: Icons.person_outline, label: 'Perfil', active: activeIndex == 3, onTap: () => onTab(3)),
         ],
       ),
