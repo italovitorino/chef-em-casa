@@ -6,6 +6,8 @@ import '../theme.dart';
 import '../widgets/app_placeholder.dart';
 import 'briefing_screen.dart';
 import 'briefings_screen.dart';
+import 'notifications_screen.dart';
+import 'profile_screen.dart';
 
 enum HomeVariant { editorial, grid, immersive }
 
@@ -78,9 +80,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildContent() {
-    if (_activeTab == 1) {
-      return BriefingsScreen(onCreate: _goToBriefing);
-    }
+    if (_activeTab == 1) return BriefingsScreen(onCreate: _goToBriefing);
+    if (_activeTab == 2) return const NotificationsScreen();
+    if (_activeTab == 3) return const ProfileScreen();
     return switch (_variant) {
       HomeVariant.editorial => _HomeEditorial(
           onCreateBriefing: _goToBriefing,
@@ -362,7 +364,7 @@ class _BottomTabBar extends StatelessWidget {
               child: const Icon(Icons.add, color: Colors.white, size: 28),
             ),
           ),
-          _TabItem(icon: Icons.chat_bubble_outline, label: 'Mensagens', active: activeIndex == 2, onTap: () => onTab(2)),
+          _TabItem(icon: Icons.notifications_outlined, label: 'Notificações', active: activeIndex == 2, onTap: () => onTab(2)),
           _TabItem(icon: Icons.person_outline, label: 'Perfil', active: activeIndex == 3, onTap: () => onTab(3)),
         ],
       ),

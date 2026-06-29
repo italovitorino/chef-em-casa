@@ -21,6 +21,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _confirmCtrl = TextEditingController();
+  String _selectedRole = 'CLIENT';
   String? _localError;
 
   @override
@@ -65,6 +66,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           name: _nameCtrl.text.trim(),
           email: _emailCtrl.text.trim(),
           password: _passCtrl.text,
+          role: _selectedRole,
         );
   }
 
@@ -135,6 +137,46 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       icon: Icons.person_outline,
                       label: 'Nome completo',
                       controller: _nameCtrl,
+                    ),
+                    const SizedBox(height: 18),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        border: Border.all(color: AppColors.line),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Row(
+                        children: [
+                          for (final (role, label) in [
+                            ('CLIENT', 'Cliente'),
+                            ('CHEF', 'Chef'),
+                          ])
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () => setState(() => _selectedRole = role),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 13),
+                                  decoration: BoxDecoration(
+                                    color: _selectedRole == role
+                                        ? AppColors.terra
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(13),
+                                  ),
+                                  child: Text(
+                                    label,
+                                    textAlign: TextAlign.center,
+                                    style: AppText.manrope(
+                                      fontWeight: FontWeight.w700,
+                                      color: _selectedRole == role
+                                          ? Colors.white
+                                          : AppColors.muted,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 18),
                     AppTextField(
