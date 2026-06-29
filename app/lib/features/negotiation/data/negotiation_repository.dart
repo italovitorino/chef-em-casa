@@ -109,6 +109,39 @@ class NegotiationRepository {
       throw const AppException('Erro ao cancelar negociação.');
     }
   }
+
+  Future<List<NegotiationResponse>> getMyNegotiations() async {
+    try {
+      final res = await _dio.get('/api/negotiations/mine');
+      final data = res.data;
+      if (data is List) {
+        return data
+            .whereType<Map<String, dynamic>>()
+            .map(NegotiationResponse.fromJson)
+            .toList();
+      }
+      return [];
+    } on DioException catch (e) {
+      throw AppException.fromDioException(e);
+    } catch (_) {
+      throw const AppException('Erro ao carregar negociações.');
+    }
+  }
+
+  Future<NegotiationResponse> submitProposal(
+      String id, SubmitProposalRequest request) async {
+    try {
+      final res = await _dio.post(
+        '/api/negotiations/$id/proposals',
+        data: request.toJson(),
+      );
+      return NegotiationResponse.fromJson(res.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw AppException.fromDioException(e);
+    } catch (_) {
+      throw const AppException('Erro ao enviar proposta.');
+    }
+  }
 }
 
 final negotiationRepositoryProvider = Provider<NegotiationRepository>(

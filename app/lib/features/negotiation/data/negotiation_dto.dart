@@ -101,6 +101,27 @@ class StartNegotiationRequest {
   Map<String, dynamic> toJson() => {'chefId': chefId};
 }
 
+class SubmitProposalRequest {
+  final double totalAmount;
+  final String serviceDescription;
+  final String? validUntil;
+  final String? notes;
+
+  const SubmitProposalRequest({
+    required this.totalAmount,
+    required this.serviceDescription,
+    this.validUntil,
+    this.notes,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'totalAmount': totalAmount,
+        'serviceDescription': serviceDescription,
+        if (validUntil != null && validUntil!.isNotEmpty) 'validUntil': validUntil,
+        if (notes != null && notes!.isNotEmpty) 'notes': notes,
+      };
+}
+
 class NegotiationListItem {
   final String id;
   final String status;

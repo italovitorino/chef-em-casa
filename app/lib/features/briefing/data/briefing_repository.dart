@@ -49,6 +49,19 @@ class BriefingRepository {
     }
   }
 
+  Future<void> expressInterest(String briefingId, {String? message}) async {
+    try {
+      await _dio.post(
+        '/api/briefings/$briefingId/interests',
+        data: {'message': message},
+      );
+    } on DioException catch (e) {
+      throw AppException.fromDioException(e);
+    } catch (_) {
+      throw const AppException('Erro ao expressar interesse.');
+    }
+  }
+
   Future<BriefingResponse> publish(CreateBriefingRequest request) async {
     try {
       final res = await _dio.post(
