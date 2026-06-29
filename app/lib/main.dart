@@ -5,6 +5,7 @@ import 'core/network/dio_client.dart';
 import 'core/storage/token_storage.dart';
 import 'features/auth/domain/auth_state.dart';
 import 'features/auth/presentation/auth_provider.dart';
+import 'screens/chef_home_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/welcome_screen.dart';
 import 'theme.dart';
@@ -38,11 +39,16 @@ class _ChefEmCasaAppState extends ConsumerState<ChefEmCasaApp> {
   }
 
   Future<void> _checkStartupToken() async {
-    final hasToken = await ref.read(tokenStorageProvider).hasToken();
+    final storage = ref.read(tokenStorageProvider);
+    final hasToken = await storage.hasToken();
     if (!mounted || !hasToken) return;
+    final role = await storage.userRole;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _navigatorKey.currentState?.pushReplacement(
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
+        MaterialPageRoute(
+          builder: (_) =>
+              role == 'CHEF' ? const ChefHomeScreen() : const HomeScreen(),
+        ),
       );
     });
   }

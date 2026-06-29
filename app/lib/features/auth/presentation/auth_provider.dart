@@ -15,10 +15,12 @@ class AuthNotifier extends Notifier<AuthState> {
           .read(authRepositoryProvider)
           .login(email: email, password: password);
       final userName = _nameFromJwt(tokens.accessToken);
+      final userRole = _roleFromJwt(tokens.accessToken);
       await ref.read(tokenStorageProvider).save(
             accessToken: tokens.accessToken,
             refreshToken: tokens.refreshToken,
             userName: userName,
+            userRole: userRole,
           );
       state = const AuthAuthenticated();
     } on Exception catch (e) {
@@ -26,7 +28,7 @@ class AuthNotifier extends Notifier<AuthState> {
     }
   }
 
-  String? _nameFromJwt(String token) {
+  Map<String, dynamic>? _decodeJwt(String token) {
     try {
       final parts = token.split('.');
       if (parts.length != 3) return null;
@@ -35,32 +37,38 @@ class AuthNotifier extends Notifier<AuthState> {
         payload += '=';
       }
       final decoded = utf8.decode(base64Url.decode(payload));
-      final claims = json.decode(decoded) as Map<String, dynamic>;
-      return claims['name'] as String?;
+      return json.decode(decoded) as Map<String, dynamic>;
     } catch (_) {
       return null;
     }
   }
 
+  String? _nameFromJwt(String token) => _decodeJwt(token)?['name'] as String?;
+
+  String? _roleFromJwt(String token) => _decodeJwt(token)?['role'] as String?;
+
   Future<void> register({
     required String name,
     required String email,
     required String password,
+    String role = 'CLIENT',
   }) async {
     state = const AuthLoading();
     try {
       await ref
           .read(authRepositoryProvider)
-          .register(name: name, email: email, password: password);
+          .register(name: name, email: email, password: password, role: role);
       // Auto-login após cadastro
       final tokens = await ref
           .read(authRepositoryProvider)
           .login(email: email, password: password);
       final userName = _nameFromJwt(tokens.accessToken);
+      final userRole = _roleFromJwt(tokens.accessToken);
       await ref.read(tokenStorageProvider).save(
             accessToken: tokens.accessToken,
             refreshToken: tokens.refreshToken,
             userName: userName,
+            userRole: userRole,
           );
       state = const AuthAuthenticated();
     } on Exception catch (e) {

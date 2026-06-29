@@ -28,11 +28,12 @@ class AuthRepository {
     required String name,
     required String email,
     required String password,
+    String role = 'CLIENT',
   }) async {
     try {
       final res = await _dio.post(
         '/api/auth/register',
-        data: RegisterRequest(name: name, email: email, password: password)
+        data: RegisterRequest(name: name, email: email, password: password, role: role)
             .toJson(),
       );
       return UserResponse.fromJson(res.data as Map<String, dynamic>);

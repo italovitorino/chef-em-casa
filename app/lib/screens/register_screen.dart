@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/storage/token_storage.dart';
 import '../features/auth/domain/auth_state.dart';
 import '../features/auth/presentation/auth_provider.dart';
 import '../theme.dart';
 import '../widgets/app_button.dart';
 import '../widgets/app_text_field.dart';
+import 'chef_home_screen.dart';
 import 'home_screen.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -28,6 +30,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _passCtrl.dispose();
     _confirmCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _navigateBasedOnRole() async {
+    final role = await ref.read(tokenStorageProvider).userRole;
+    if (!mounted) return;
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (_) =>
+            role == 'CHEF' ? const ChefHomeScreen() : const HomeScreen(),
+      ),
+      (_) => false,
+    );
   }
 
   Future<void> _submit() async {
@@ -60,11 +75,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     ref.listen<AuthState>(authNotifierProvider, (_, next) {
       if (next is AuthAuthenticated) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (_) => const HomeScreen()),
-          (_) => false,
-        );
+        _navigateBasedOnRole();
       } else if (next is AuthError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
